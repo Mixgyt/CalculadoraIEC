@@ -8,7 +8,7 @@ class CalculadoraController extends Controller
 {
     public function index()
     {
-        return view('calculadora');
+        return view('calculadora',["page"=>"calculadora"]);
     }
 
     public function calcular(Request $request)

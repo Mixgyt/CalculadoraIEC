@@ -18,10 +18,10 @@
     </script>
 </head>
 <body class="bg-background text-foreground">
-    <head>
-        @include("components.header")
-    </head>
-    <main class="container mt-2">
+
+    @include("components.header")
+
+    <main class="container">
         @yield("content")
     </main>
 </body>

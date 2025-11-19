@@ -1,4 +1,4 @@
-<nav class="relative bg-surface border-b border-border shadow-sm">
+<nav class="sticky top-0 z-50 bg-surface border-b border-border shadow-sm">
     <div class="w-full px-2 sm:px-6 lg:px-8">
         <div class="relative flex h-16 items-center justify-between">
             <!-- Mobile menu button -->
