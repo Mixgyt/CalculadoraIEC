@@ -17,7 +17,7 @@
         })();
     </script>
 </head>
-<body class="bg-background">
+<body class="bg-background text-foreground">
     <head>
         @include("components.header")
     </head>

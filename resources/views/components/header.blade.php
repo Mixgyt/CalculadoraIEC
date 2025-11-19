@@ -21,7 +21,7 @@
             <div class="flex flex-1 items-center sm:items-stretch sm:justify-start pl-12 sm:pl-0">
                 <!-- Logo -->
                 <div class="flex shrink-0 items-center sm:pl-0">
-                    <a href="/inicio" class="text-foreground text-xl font-bold hover:text-foreground-muted transition-colors sm:ms-0 ms-2">
+                    <a href="{{ route("inicio") }}" class="text-foreground text-xl font-bold hover:text-foreground-muted transition-colors sm:ms-0 ms-2">
                         Anualidad Diferida
                     </a>
                 </div>
@@ -29,10 +29,10 @@
                 <!-- Desktop Navigation -->
                 <div class="hidden sm:ml-6 sm:block">
                     <div class="flex space-x-2 md:space-x-4">
-                        <a href="/inicio" class="text-foreground hover:text-foreground-muted rounded-md px-2 md:px-3 py-2 text-sm font-medium transition-colors">
+                        <a href="{{ route("inicio") }}" class="{{ (isset($page) && $page === "calculadora" ) ? 'bg-surface-secondary text-foreground' : 'text-foreground-muted hover:bg-surface-secondary hover:text-foreground' }} rounded-md px-2 md:px-3 py-2 text-sm font-medium transition-colors">
                             Caluladora
                         </a>
-                        <a href="#" class=" text-foreground hover:text-foreground-muted rounded-md px-2 md:px-3 py-2 text-sm font-medium transition-colors">
+                        <a href="#" class="{{ (isset($page) && $page === "creditos" ) ? 'bg-surface-secondary text-foreground' : 'text-foreground-muted hover:bg-surface-secondary hover:text-foreground' }} rounded px-2 md:px-3 py-2 text-sm font-medium transition-colors">
                             Creditos
                         </a>
                     </div>
