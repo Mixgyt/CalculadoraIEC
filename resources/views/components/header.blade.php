@@ -30,7 +30,7 @@
                 <div class="hidden sm:ml-6 sm:block">
                     <div class="flex space-x-2 md:space-x-4">
                         <a href="{{ route("inicio") }}" class="{{ (isset($page) && $page === "calculadora" ) ? 'bg-surface-secondary text-foreground' : 'text-foreground-muted hover:bg-surface-secondary hover:text-foreground' }} rounded-md px-2 md:px-3 py-2 text-sm font-medium transition-colors">
-                            Calculadora
+                            Anticipadas
                         </a>
                         <a href="{{ route("calculadora_diferida") }}" class="{{ (isset($page) && $page === "calculadoraD" ) ? 'bg-surface-secondary text-foreground' : 'text-foreground-muted hover:bg-surface-secondary hover:text-foreground' }} rounded px-2 md:px-3 py-2 text-sm font-medium transition-colors">
                             Diferida
