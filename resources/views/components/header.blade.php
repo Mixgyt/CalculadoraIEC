@@ -22,7 +22,7 @@
                 <!-- Logo -->
                 <div class="flex shrink-0 items-center sm:pl-0">
                     <a href="{{ route("inicio") }}" class="text-foreground text-xl font-bold hover:text-foreground-muted transition-colors sm:ms-0 ms-2">
-                        Anualidad Diferida
+                        Anualidades anticipadas
                     </a>
                 </div>
 
@@ -33,7 +33,7 @@
                             Anticipadas
                         </a>
                         <a href="{{ route("calculadora_diferida") }}" class="{{ (isset($page) && $page === "calculadoraD" ) ? 'bg-surface-secondary text-foreground' : 'text-foreground-muted hover:bg-surface-secondary hover:text-foreground' }} rounded px-2 md:px-3 py-2 text-sm font-medium transition-colors">
-                            Diferida
+                            Diferida (Test)
                         </a>
                         <!-- Added About link to desktop menu -->
                         <a href="{{ route("about") }}" class="{{ (request()->routeIs('about')) ? 'bg-surface-secondary text-foreground' : 'text-foreground-muted hover:bg-surface-secondary hover:text-foreground' }} rounded px-2 md:px-3 py-2 text-sm font-medium transition-colors">
@@ -66,7 +66,7 @@
                         <a href="{{ route('login') }}" class="text-sm font-medium text-foreground-muted hover:text-foreground">
                             Iniciar Sesión
                         </a>
-                        <a href="{{ route('register') }}" class="text-sm font-medium bg-primary text-primary-foreground px-3 py-1.5 rounded-md hover:bg-primary/90">
+                        <a href="{{ route('register') }}" class="text-sm font-medium bg-primary text-white px-3 py-1.5 rounded-md hover:bg-primary/90">
                             Registrarse
                         </a>
                     </div>

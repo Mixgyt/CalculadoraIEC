@@ -21,28 +21,28 @@
             <div class="space-y-4 rounded-md shadow-sm">
                 <div>
                     <label for="name" class="block text-sm font-medium text-foreground mb-1">Nombre Completo</label>
-                    <input id="name" name="name" type="text" autocomplete="name" required class="relative block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 px-3" placeholder="Juan Pérez">
+                    <input id="name" name="name" type="text" autocomplete="name" required class="relative block w-full rounded-md border-0 py-1.5 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 px-3" placeholder="Juan Pérez">
                     @error('name')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
                     <label for="email" class="block text-sm font-medium text-foreground mb-1">Correo Electrónico</label>
-                    <input id="email" name="email" type="email" autocomplete="email" required class="relative block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 px-3" placeholder="correo@ejemplo.com">
+                    <input id="email" name="email" type="email" autocomplete="email" required class="relative block w-full rounded-md border-0 py-1.5 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 px-3" placeholder="correo@ejemplo.com">
                     @error('email')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
                     <label for="password" class="block text-sm font-medium text-foreground mb-1">Contraseña</label>
-                    <input id="password" name="password" type="password" autocomplete="new-password" required class="relative block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 px-3" placeholder="••••••••">
+                    <input id="password" name="password" type="password" autocomplete="new-password" required class="relative block w-full rounded-md border-0 py-1.5 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 px-3" placeholder="••••••••">
                     @error('password')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
                     <label for="password_confirmation" class="block text-sm font-medium text-foreground mb-1">Confirmar Contraseña</label>
-                    <input id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" required class="relative block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 px-3" placeholder="••••••••">
+                    <input id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" required class="relative block w-full rounded-md border-0 py-1.5 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 px-3" placeholder="••••••••">
                 </div>
             </div>
 
