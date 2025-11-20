@@ -237,7 +237,7 @@
                     @if(isset($resultado))
                         <!-- Resultado Principal -->
                         <div class="bg-success-light border border-success/20 rounded-lg shadow-md">
-                            <div class="p-6 lg:p-8">
+                            <div class="px-6 py-3 lg:px-8 lg:py:2">
                                 <div class="flex items-center mb-4">
                                     <svg class="w-6 h-6 text-success mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -263,87 +263,191 @@
                                     </div>
                                 </div>
 
-                                <!-- Detalles -->
-                                <div class="space-y-2 text-sm">
-                                    @if(isset($resultado['valor_presente']))
-                                        <div class="flex justify-between py-2 border-b border-border/30">
-                                            <span class="text-foreground-muted">Capital (C):</span>
-                                            <span class="font-semibold text-foreground">${{ number_format($resultado['valor_presente'], 2) }}</span>
-                                        </div>
-                                    @endif
-                                    
-                                    @if(isset($resultado['renta']))
-                                        <div class="flex justify-between py-2 border-b border-border/30">
-                                            <span class="text-foreground-muted">Renta (R):</span>
-                                            <span class="font-semibold text-foreground">${{ number_format($resultado['renta'], 2) }}</span>
-                                        </div>
-                                    @endif
-                                    
-                                    @if(isset($resultado['monto']))
-                                        <div class="flex justify-between py-2 border-b border-border/30">
-                                            <span class="text-foreground-muted">Monto (M):</span>
-                                            <span class="font-semibold text-foreground">${{ number_format($resultado['monto'], 2) }}</span>
-                                        </div>
-                                    @endif
-                                    
-                                    @if(isset($resultado['numero_periodos']))
-                                        <div class="flex justify-between py-2 border-b border-border/30">
-                                            <span class="text-foreground-muted">Períodos (n):</span>
-                                            <span class="font-semibold text-foreground">{{ $resultado['numero_periodos'] }}</span>
-                                        </div>
-                                    @endif
-                                    
-                                    @if(isset($resultado['total_pagado']))
-                                        <div class="flex justify-between py-2 border-b border-border/30">
-                                            <span class="text-foreground-muted">Total Pagado:</span>
-                                            <span class="font-semibold text-foreground">${{ number_format($resultado['total_pagado'], 2) }}</span>
-                                        </div>
-                                    @endif
-                                    
-                                    @if(isset($resultado['total_depositado']))
-                                        <div class="flex justify-between py-2 border-b border-border/30">
-                                            <span class="text-foreground-muted">Total Depositado:</span>
-                                            <span class="font-semibold text-foreground">${{ number_format($resultado['total_depositado'], 2) }}</span>
-                                        </div>
-                                    @endif
-                                    
-                                    @if(isset($resultado['total_pagos']))
-                                        <div class="flex justify-between py-2 border-b border-border/30">
-                                            <span class="text-foreground-muted">Total de Pagos:</span>
-                                            <span class="font-semibold text-foreground">${{ number_format($resultado['total_pagos'], 2) }}</span>
-                                        </div>
-                                    @endif
-                                    
-                                    @if(isset($resultado['ultimo_pago']))
-                                        <div class="flex justify-between py-2 border-b border-border/30">
-                                            <span class="text-foreground-muted">Último Pago:</span>
-                                            <span class="font-semibold text-foreground">${{ number_format($resultado['ultimo_pago'], 2) }}</span>
-                                        </div>
-                                    @endif
-                                    
-                                    @if(isset($resultado['ultimo_deposito']))
-                                        <div class="flex justify-between py-2 border-b border-border/30">
-                                            <span class="text-foreground-muted">Último Depósito:</span>
-                                            <span class="font-semibold text-foreground">${{ number_format($resultado['ultimo_deposito'], 2) }}</span>
-                                        </div>
-                                    @endif
-                                    
-                                    @if(isset($resultado['intereses_totales']))
-                                        <div class="flex justify-between py-2">
-                                            <span class="text-foreground-muted">Intereses:</span>
-                                            <span class="font-semibold text-primary">${{ number_format($resultado['intereses_totales'], 2) }}</span>
-                                        </div>
-                                    @endif
-                                    
-                                    @if(isset($resultado['intereses_ganados']))
-                                        <div class="flex justify-between py-2">
-                                            <span class="text-foreground-muted">Intereses Ganados:</span>
-                                            <span class="font-semibold text-primary">${{ number_format($resultado['intereses_ganados'], 2) }}</span>
-                                        </div>
-                                    @endif
-                                </div>
+                                
+
+
                             </div>
                         </div>
+
+
+                        <!-- Fórmula Utilizada -->
+                        @if(isset($resultado['tipo_formula']))
+                        <div class="bg-surface border border-primary/20 rounded-lg shadow-sm">
+                            <div class="px-6 py-4 border-b border-primary/20 bg-primary/5">
+                                <h3 class="text-lg font-bold text-primary">Fórmula Utilizada</h3>
+                            </div>
+                            <div class="px-6 py-4">
+                                @if($resultado['tipo_formula'] == 'monto')
+                                    <div class="bg-surface p-4 rounded-lg border border-primary/20 mb-3">
+                                        <p class="text-center text-base text-foreground mb-3">
+                                            <strong>Monto (M):</strong>
+                                        </p>
+                                        <div class="text-center text-foreground text-lg">
+                                            $$M = R \times \left[\frac{(1+i)^n - 1}{i}\right] \times (1+i)$$
+                                        </div>
+                                    </div>
+                                    <div class="text-sm text-foreground space-y-2 bg-primary/5 p-3 rounded mb-3">
+                                        <p class="font-semibold text-primary mb-2">Datos del cálculo:</p>
+                                        <p><strong>R (Renta periódica):</strong> ${{ number_format($resultado['renta'], 2) }}</p>
+                                        <p><strong>i (Tasa efectiva {{ $resultado['periodo_pagos'] }}):</strong> {{ number_format($resultado['tasa_convertida'] * 100, 4) }}%</p>
+                                        <p><strong>n (Número de períodos):</strong> {{ $resultado['numero_periodos'] }}</p>
+                                        <p class="pt-2 border-t border-primary/20"><strong>M:</strong> Monto o valor futuro</p>
+                                    </div>
+                                    <div class="bg-surface p-4 rounded-lg border border-success/20">
+                                        <p class="text-center text-sm text-foreground-muted mb-2">Sustituyendo valores:</p>
+                                        @php
+                                            $r_val = $resultado['renta'];
+                                            $i_val = $resultado['tasa_convertida'];
+                                            $n_val = $resultado['numero_periodos'];
+                                        @endphp
+                                        <div class="text-center text-foreground">
+                                            $$M = {{ $r_val }} \times \left[\frac{(1+{{ $i_val }})^{ {{ $n_val }} } - 1}{ {{ $i_val }} }\right] \times (1+{{ $i_val }})$$
+                                        </div>
+                                    </div>
+                                
+                                @elseif($resultado['tipo_formula'] == 'capital')
+                                    <div class="bg-surface p-4 rounded-lg border border-primary/20 mb-3">
+                                        <p class="text-center text-base text-foreground mb-3">
+                                            <strong>Capital (C):</strong>
+                                        </p>
+                                        <div class="text-center text-foreground text-lg">
+                                            $$C = R \times \left[\frac{1 - (1+i)^{-n}}{i}\right] \times (1+i)$$
+                                        </div>
+                                    </div>
+                                    <div class="text-sm text-foreground space-y-2 bg-primary/5 p-3 rounded mb-3">
+                                        <p class="font-semibold text-primary mb-2">Datos del cálculo:</p>
+                                        <p><strong>R (Renta periódica):</strong> ${{ number_format($resultado['renta'], 2) }}</p>
+                                        <p><strong>i (Tasa efectiva {{ $resultado['periodo_pagos'] }}):</strong> {{ number_format($resultado['tasa_convertida'] * 100, 4) }}%</p>
+                                        <p><strong>n (Número de períodos):</strong> {{ $resultado['numero_periodos'] }}</p>
+                                        <p class="pt-2 border-t border-primary/20"><strong>C:</strong> Capital o valor presente</p>
+                                    </div>
+                                    <div class="bg-surface p-4 rounded-lg border border-success/20">
+                                        <p class="text-center text-sm text-foreground-muted mb-2">Sustituyendo valores:</p>
+                                        @php
+                                            $r_val = $resultado['renta'];
+                                            $i_val = $resultado['tasa_convertida'];
+                                            $n_val = $resultado['numero_periodos'];
+                                        @endphp
+                                        <div class="text-center text-foreground">
+                                            $$C = {{ $r_val }} \times \left[\frac{1 - (1+{{ $i_val }})^{-{{ $n_val }}}}{{{ $i_val }}}\right] \times (1+{{ $i_val }})$$
+                                        </div>
+                                    </div>
+                                
+                                @elseif($resultado['tipo_formula'] == 'renta_desde_monto')
+                                    <div class="bg-surface p-4 rounded-lg border border-primary/20 mb-3">
+                                        <p class="text-center text-base text-foreground mb-3">
+                                            <strong>Pago R a partir de M:</strong>
+                                        </p>
+                                        <div class="text-center text-foreground text-lg">
+                                            $$R = \frac{M}{\left[\frac{(1+i)^n - 1}{i}\right] \times (1+i)}$$
+                                        </div>
+                                    </div>
+                                    <div class="text-sm text-foreground space-y-2 bg-primary/5 p-3 rounded mb-3">
+                                        <p class="font-semibold text-primary mb-2">Datos del cálculo:</p>
+                                        <p><strong>M (Monto futuro deseado):</strong> ${{ number_format($resultado['monto'], 2) }}</p>
+                                        <p><strong>i (Tasa efectiva {{ $resultado['periodo_pagos'] }}):</strong> {{ number_format($resultado['tasa_convertida'] * 100, 4) }}%</p>
+                                        <p><strong>n (Número de períodos):</strong> {{ $resultado['numero_periodos'] }}</p>
+                                        <p class="pt-2 border-t border-primary/20"><strong>R:</strong> Renta o pago periódico</p>
+                                    </div>
+                                    <div class="bg-surface p-4 rounded-lg border border-success/20">
+                                        <p class="text-center text-sm text-foreground-muted mb-2">Sustituyendo valores:</p>
+                                        @php
+                                            $m_val = $resultado['monto'];
+                                            $i_val = $resultado['tasa_convertida'];
+                                            $n_val = $resultado['numero_periodos'];
+                                        @endphp
+                                        <div class="text-center text-foreground">
+                                            $$R = \frac{ {{ $m_val }} }{\left[\frac{(1+{{ $i_val }})^{ {{ $n_val }} } - 1}{ {{ $i_val }} }\right] \times (1+{{ $i_val }})}$$
+                                        </div>
+                                    </div>
+                                
+                                @elseif($resultado['tipo_formula'] == 'renta_desde_capital')
+                                    <div class="bg-surface p-4 rounded-lg border border-primary/20 mb-3">
+                                        <p class="text-center text-base text-foreground mb-3">
+                                            <strong>Pago R a partir de C:</strong>
+                                        </p>
+                                        <div class="text-center text-foreground text-lg">
+                                            $$R = \frac{C}{\left[\frac{1 - (1+i)^{-n}}{i}\right] \times (1+i)}$$
+                                        </div>
+                                    </div>
+                                    <div class="text-sm text-foreground space-y-2 bg-primary/5 p-3 rounded mb-3">
+                                        <p class="font-semibold text-primary mb-2">Datos del cálculo:</p>
+                                        <p><strong>C (Capital presente):</strong> ${{ number_format($resultado['valor_presente'], 2) }}</p>
+                                        <p><strong>i (Tasa efectiva {{ $resultado['periodo_pagos'] }}):</strong> {{ number_format($resultado['tasa_convertida'] * 100, 4) }}%</p>
+                                        <p><strong>n (Número de períodos):</strong> {{ $resultado['numero_periodos'] }}</p>
+                                        <p class="pt-2 border-t border-primary/20"><strong>R:</strong> Renta o pago periódico</p>
+                                    </div>
+                                    <div class="bg-surface p-4 rounded-lg border border-success/20">
+                                        <p class="text-center text-sm text-foreground-muted mb-2">Sustituyendo valores:</p>
+                                        @php
+                                            $c_val = $resultado['valor_presente'];
+                                            $i_val = $resultado['tasa_convertida'];
+                                            $n_val = $resultado['numero_periodos'];
+                                        @endphp
+                                        <div class="text-center text-foreground">
+                                            $$R = \frac{ {{ $c_val }} }{\left[\frac{1 - (1+{{ $i_val }})^{-{{ $n_val }}}}{{{ $i_val }}}\right] \times (1+{{ $i_val }})}$$
+                                        </div>
+                                    </div>
+                                
+                                @elseif($resultado['tipo_formula'] == 'periodos_desde_monto')
+                                    <div class="bg-surface p-4 rounded-lg border border-primary/20 mb-3">
+                                        <p class="text-center text-base text-foreground mb-3">
+                                            <strong>Períodos (n) a partir de Monto (M):</strong>
+                                        </p>
+                                        <div class="text-center text-foreground text-lg">
+                                            $$n = \frac{\ln\left(\frac{M \cdot i}{R(1+i)} + 1\right)}{\ln(1+i)}$$
+                                        </div>
+                                    </div>
+                                    <div class="text-sm text-foreground space-y-2 bg-primary/5 p-3 rounded mb-3">
+                                        <p class="font-semibold text-primary mb-2">Datos del cálculo:</p>
+                                        <p><strong>M (Monto futuro deseado):</strong> ${{ number_format($resultado['monto'], 2) }}</p>
+                                        <p><strong>R (Renta periódica):</strong> ${{ number_format($resultado['renta'], 2) }}</p>
+                                        <p><strong>i (Tasa efectiva {{ $resultado['periodo_pagos'] }}):</strong> {{ number_format($resultado['tasa_convertida'] * 100, 4) }}%</p>
+                                        <p class="pt-2 border-t border-primary/20"><strong>n:</strong> Número de períodos</p>
+                                    </div>
+                                    <div class="bg-surface p-4 rounded-lg border border-success/20">
+                                        <p class="text-center text-sm text-foreground-muted mb-2">Sustituyendo valores:</p>
+                                        @php
+                                            $m_val = $resultado['monto'];
+                                            $r_val = $resultado['renta'];
+                                            $i_val = $resultado['tasa_convertida'];
+                                        @endphp
+                                        <div class="text-center text-foreground">
+                                            $$n = \frac{\ln\left(\frac{ {{ $m_val }} \cdot {{ $i_val }} }{ {{ $r_val }} (1+{{ $i_val }})} + 1\right)}{\ln(1+{{ $i_val }})}$$
+                                        </div>
+                                    </div>
+                                
+                                @elseif($resultado['tipo_formula'] == 'periodos_desde_capital')
+                                    <div class="bg-surface p-4 rounded-lg border border-primary/20 mb-3">
+                                        <p class="text-center text-base text-foreground mb-3">
+                                            <strong>Períodos (n) a partir de Capital (C):</strong>
+                                        </p>
+                                        <div class="text-center text-foreground text-lg">
+                                            $$n = -\frac{\ln\left(1 - \frac{C \cdot i}{R(1+i)}\right)}{\ln(1+i)}$$
+                                        </div>
+                                    </div>
+                                    <div class="text-sm text-foreground space-y-2 bg-primary/5 p-3 rounded mb-3">
+                                        <p class="font-semibold text-primary mb-2">Datos del cálculo:</p>
+                                        <p><strong>C (Capital presente):</strong> ${{ number_format($resultado['valor_presente'], 2) }}</p>
+                                        <p><strong>R (Renta periódica):</strong> ${{ number_format($resultado['renta'], 2) }}</p>
+                                        <p><strong>i (Tasa efectiva {{ $resultado['periodo_pagos'] }}):</strong> {{ number_format($resultado['tasa_convertida'] * 100, 4) }}%</p>
+                                        <p class="pt-2 border-t border-primary/20"><strong>n:</strong> Número de períodos</p>
+                                    </div>
+                                    <div class="bg-surface p-4 rounded-lg border border-success/20">
+                                        <p class="text-center text-sm text-foreground-muted mb-2">Sustituyendo valores:</p>
+                                        @php
+                                            $c_val = $resultado['valor_presente'];
+                                            $r_val = $resultado['renta'];
+                                            $i_val = $resultado['tasa_convertida'];
+                                        @endphp
+                                        <div class="text-center text-foreground">
+                                            $$n = -\frac{\ln\left(1 - \frac{ {{ $c_val }} \cdot {{ $i_val }} }{ {{ $r_val }} (1+{{ $i_val }})}\right)}{\ln(1+{{ $i_val }})}$$
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                        @endif
 
                         <!-- Conversión de Tasas -->
                         <div class="bg-surface border border-border rounded-lg shadow-sm">
@@ -379,6 +483,7 @@
                                 </div>
                             </div>
                         </div>
+
                     @else
                         <!-- Info Inicial -->
                         <div class="bg-surface border border-border rounded-lg shadow-sm">
