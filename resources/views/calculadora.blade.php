@@ -30,16 +30,16 @@
                                 </label>
                                 <div class="flex flex-wrap gap-1">
                                     <button onclick="seleccionarTipoCalculo('tiporenta')" type="button" id="tiporenta" class="flex items-center gap-2 px-3 py-3 rounded-lg transition-all duration-300 ease-in-out border-2 border-border hover:border-primary hover:scale-105 transform">
-                                        <span class="text-xl"><i class="fa fa-coins"></i></span><span class="font-medium">Renta</span>
+                                        <span class="text-xl"><i class="fa fa-coins"></i></span><span class="font-medium text-sm lg:text-md xl:text-sm">Renta</span>
                                     </button>
                                     <button onclick="seleccionarTipoCalculo('tipovalor_presente')" type="button" id="tipovalor_presente" class="flex items-center gap-2 px-3 py-3 rounded-lg transition-all duration-300 ease-in-out border-2 border-border hover:border-primary hover:scale-105 transform">
-                                        <span class="text-xl"><i class="fa fa-money-bill"></i></span><span class="font-medium">Capital</span>
+                                        <span class="text-xl"><i class="fa fa-money-bill"></i></span><span class="font-medium text-sm lg:text-md xl:text-sm">Capital</span>
                                     </button>
                                     <button onclick="seleccionarTipoCalculo('tipomonto')" type="button" id="tipomonto" class="flex items-center gap-2 px-3 py-3 rounded-lg transition-all duration-300 ease-in-out border-2 border-border hover:border-primary hover:scale-105 transform">
-                                        <span class="text-xl"><i class="fa fa-money-bill-trend-up"></i></span><span class="font-medium">Monto</span>
+                                        <span class="text-xl"><i class="fa fa-money-bill-trend-up"></i></span><span class="font-medium text-sm lg:text-md xl:text-sm">Monto</span>
                                     </button>
                                     <button onclick="seleccionarTipoCalculo('tipoperiodos')" type="button" id="tipoperiodos" class="flex items-center gap-2 px-3 py-3 rounded-lg transition-all duration-300 ease-in-out border-2 border-border hover:border-primary hover:scale-105 transform">
-                                        <span class="text-xl"><i class="fa fa-calendar"></i></span><span class="font-medium">Periodo</span>
+                                        <span class="text-xl"><i class="fa fa-calendar"></i></span><span class="font-medium text-sm lg:text-md xl:text-sm">Periodo</span>
                                     </button>
                                 </div>
                             </div>
