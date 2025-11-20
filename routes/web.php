@@ -28,3 +28,7 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 Route::get('/historial', [HistoryController::class, 'index'])->name('historial')->middleware('auth');
+
+Route::get('/acerca-de', function () {
+    return view('about');
+})->name('about');

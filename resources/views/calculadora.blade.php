@@ -32,10 +32,10 @@
                                         class="w-full px-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-foreground"
                                         required>
                                     <option value="">Seleccionar...</option>
-                                    <option value="renta" {{ old('tipo_calculo') == 'renta' ? 'selected' : '' }}>Renta (R) - Pago periódico</option>
-                                    <option value="valor_presente" {{ old('tipo_calculo') == 'valor_presente' ? 'selected' : '' }}>Capital (C) - Valor presente</option>
-                                    <option value="monto" {{ old('tipo_calculo') == 'monto' ? 'selected' : '' }}>Monto (M) - Valor futuro</option>
-                                    <option value="periodos" {{ old('tipo_calculo') == 'periodos' ? 'selected' : '' }}>Períodos (n) - Número de pagos</option>
+                                    <option value="renta" {{ old('tipo_calculo', $prefillData['tipo_calculo'] ?? '') == 'renta' ? 'selected' : '' }}>Renta (R) - Pago periódico</option>
+                                    <option value="valor_presente" {{ old('tipo_calculo', $prefillData['tipo_calculo'] ?? '') == 'valor_presente' ? 'selected' : '' }}>Capital (C) - Valor presente</option>
+                                    <option value="monto" {{ old('tipo_calculo', $prefillData['tipo_calculo'] ?? '') == 'monto' ? 'selected' : '' }}>Monto (M) - Valor futuro</option>
+                                    <option value="periodos" {{ old('tipo_calculo', $prefillData['tipo_calculo'] ?? '') == 'periodos' ? 'selected' : '' }}>Períodos (n) - Número de pagos</option>
                                 </select>
                             </div>
 
@@ -52,7 +52,7 @@
                                            name="valor_presente" 
                                            class="w-full pl-8 pr-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-foreground"
                                            placeholder="100000.00"
-                                           value="{{ old('valor_presente') }}">
+                                           value="{{ old('valor_presente', $prefillData['valor_presente'] ?? '') }}">
                                 </div>
                                 <p class="text-xs text-foreground-muted mt-1">Valor presente o inicial</p>
                             </div>
@@ -70,7 +70,7 @@
                                            name="renta" 
                                            class="w-full pl-8 pr-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-foreground"
                                            placeholder="5000.00"
-                                           value="{{ old('renta') }}">
+                                           value="{{ old('renta', $prefillData['renta'] ?? '') }}">
                                 </div>
                                 <p class="text-xs text-foreground-muted mt-1">Pago o depósito periódico</p>
                             </div>
@@ -88,7 +88,7 @@
                                            name="monto" 
                                            class="w-full pl-8 pr-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-foreground"
                                            placeholder="150000.00"
-                                           value="{{ old('monto') }}">
+                                           value="{{ old('monto', $prefillData['monto'] ?? '') }}">
                                 </div>
                                 <p class="text-xs text-foreground-muted mt-1">Valor futuro o final</p>
                             </div>
@@ -104,7 +104,7 @@
                                        min="1"
                                        class="w-full px-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-foreground"
                                        placeholder="24"
-                                       value="{{ old('numero_periodos') }}">
+                                       value="{{ old('numero_periodos', $prefillData['numero_periodos'] ?? '') }}">
                                 <p class="text-xs text-foreground-muted mt-1">Cantidad de pagos o depósitos</p>
                             </div>
 
@@ -120,7 +120,7 @@
                                            name="tasa_interes" 
                                            class="w-full px-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-foreground"
                                            placeholder="12.00"
-                                           value="{{ old('tasa_interes') }}"
+                                           value="{{ old('tasa_interes', $prefillData['tasa_interes'] ?? '') }}"
                                            required>
                                     <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-foreground-muted">%</span>
                                 </div>
@@ -137,11 +137,11 @@
                                         class="w-full px-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-foreground"
                                         required>
                                     <option value="">Seleccionar...</option>
-                                    <option value="anual" {{ old('periodo_tasa') == 'anual' ? 'selected' : '' }}>Anual</option>
-                                    <option value="semestral" {{ old('periodo_tasa') == 'semestral' ? 'selected' : '' }}>Semestral</option>
-                                    <option value="trimestral" {{ old('periodo_tasa') == 'trimestral' ? 'selected' : '' }}>Trimestral</option>
-                                    <option value="bimestral" {{ old('periodo_tasa') == 'bimestral' ? 'selected' : '' }}>Bimestral</option>
-                                    <option value="mensual" {{ old('periodo_tasa') == 'mensual' ? 'selected' : '' }}>Mensual</option>
+                                    <option value="anual" {{ old('periodo_tasa', $prefillData['periodo_tasa'] ?? '') == 'anual' ? 'selected' : '' }}>Anual</option>
+                                    <option value="semestral" {{ old('periodo_tasa', $prefillData['periodo_tasa'] ?? '') == 'semestral' ? 'selected' : '' }}>Semestral</option>
+                                    <option value="trimestral" {{ old('periodo_tasa', $prefillData['periodo_tasa'] ?? '') == 'trimestral' ? 'selected' : '' }}>Trimestral</option>
+                                    <option value="bimestral" {{ old('periodo_tasa', $prefillData['periodo_tasa'] ?? '') == 'bimestral' ? 'selected' : '' }}>Bimestral</option>
+                                    <option value="mensual" {{ old('periodo_tasa', $prefillData['periodo_tasa'] ?? '') == 'mensual' ? 'selected' : '' }}>Mensual</option>
                                 </select>
                                 <p class="text-xs text-foreground-muted mt-1">A qué período corresponde la tasa</p>
                             </div>
@@ -155,13 +155,13 @@
                                         name="periodo_capitalizacion" 
                                         class="w-full px-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-foreground">
                                     <option value="">Igual al período de la tasa</option>
-                                    <option value="anual" {{ old('periodo_capitalizacion') == 'anual' ? 'selected' : '' }}>Anual</option>
-                                    <option value="semestral" {{ old('periodo_capitalizacion') == 'semestral' ? 'selected' : '' }}>Semestral</option>
-                                    <option value="trimestral" {{ old('periodo_capitalizacion') == 'trimestral' ? 'selected' : '' }}>Trimestral</option>
-                                    <option value="bimestral" {{ old('periodo_capitalizacion') == 'bimestral' ? 'selected' : '' }}>Bimestral</option>
-                                    <option value="mensual" {{ old('periodo_capitalizacion') == 'mensual' ? 'selected' : '' }}>Mensual</option>
-                                    <option value="diario" {{ old('periodo_capitalizacion') == 'diario' ? 'selected' : '' }}>Diario</option>
-                                    <option value="continuo" {{ old('periodo_capitalizacion') == 'continuo' ? 'selected' : '' }}>Continuo</option>
+                                    <option value="anual" {{ old('periodo_capitalizacion', $prefillData['periodo_capitalizacion'] ?? '') == 'anual' ? 'selected' : '' }}>Anual</option>
+                                    <option value="semestral" {{ old('periodo_capitalizacion', $prefillData['periodo_capitalizacion'] ?? '') == 'semestral' ? 'selected' : '' }}>Semestral</option>
+                                    <option value="trimestral" {{ old('periodo_capitalizacion', $prefillData['periodo_capitalizacion'] ?? '') == 'trimestral' ? 'selected' : '' }}>Trimestral</option>
+                                    <option value="bimestral" {{ old('periodo_capitalizacion', $prefillData['periodo_capitalizacion'] ?? '') == 'bimestral' ? 'selected' : '' }}>Bimestral</option>
+                                    <option value="mensual" {{ old('periodo_capitalizacion', $prefillData['periodo_capitalizacion'] ?? '') == 'mensual' ? 'selected' : '' }}>Mensual</option>
+                                    <option value="diario" {{ old('periodo_capitalizacion', $prefillData['periodo_capitalizacion'] ?? '') == 'diario' ? 'selected' : '' }}>Diario</option>
+                                    <option value="continuo" {{ old('periodo_capitalizacion', $prefillData['periodo_capitalizacion'] ?? '') == 'continuo' ? 'selected' : '' }}>Continuo</option>
                                 </select>
                                 <p class="text-xs text-foreground-muted mt-1">Frecuencia de capitalización del interés (opcional)</p>
                             </div>
@@ -176,11 +176,11 @@
                                         class="w-full px-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-foreground"
                                         required>
                                     <option value="">Seleccionar...</option>
-                                    <option value="anual" {{ old('periodo_pagos') == 'anual' ? 'selected' : '' }}>Anual</option>
-                                    <option value="semestral" {{ old('periodo_pagos') == 'semestral' ? 'selected' : '' }}>Semestral</option>
-                                    <option value="trimestral" {{ old('periodo_pagos') == 'trimestral' ? 'selected' : '' }}>Trimestral</option>
-                                    <option value="bimestral" {{ old('periodo_pagos') == 'bimestral' ? 'selected' : '' }}>Bimestral</option>
-                                    <option value="mensual" {{ old('periodo_pagos') == 'mensual' ? 'selected' : '' }}>Mensual</option>
+                                    <option value="anual" {{ old('periodo_pagos', $prefillData['periodo_pagos'] ?? '') == 'anual' ? 'selected' : '' }}>Anual</option>
+                                    <option value="semestral" {{ old('periodo_pagos', $prefillData['periodo_pagos'] ?? '') == 'semestral' ? 'selected' : '' }}>Semestral</option>
+                                    <option value="trimestral" {{ old('periodo_pagos', $prefillData['periodo_pagos'] ?? '') == 'trimestral' ? 'selected' : '' }}>Trimestral</option>
+                                    <option value="bimestral" {{ old('periodo_pagos', $prefillData['periodo_pagos'] ?? '') == 'bimestral' ? 'selected' : '' }}>Bimestral</option>
+                                    <option value="mensual" {{ old('periodo_pagos', $prefillData['periodo_pagos'] ?? '') == 'mensual' ? 'selected' : '' }}>Mensual</option>
                                 </select>
                                 <p class="text-xs text-foreground-muted mt-1">Cada cuándo se paga/deposita</p>
                             </div>
@@ -309,7 +309,7 @@
                                     @endif
                                     
                                     @if(isset($resultado['intereses_totales']))
-                                        <div class="flex justify-between py-2">
+                                        <div class="flex justify-between py-2 border-b border-border/30">
                                             <span class="text-foreground-muted">Intereses:</span>
                                             <span class="font-semibold text-primary">${{ number_format($resultado['intereses_totales'], 2) }}</span>
                                         </div>

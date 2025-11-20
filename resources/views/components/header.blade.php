@@ -30,10 +30,14 @@
                 <div class="hidden sm:ml-6 sm:block">
                     <div class="flex space-x-2 md:space-x-4">
                         <a href="{{ route("inicio") }}" class="{{ (isset($page) && $page === "calculadora" ) ? 'bg-surface-secondary text-foreground' : 'text-foreground-muted hover:bg-surface-secondary hover:text-foreground' }} rounded-md px-2 md:px-3 py-2 text-sm font-medium transition-colors">
-                            Anticipadas
+                            Calculadora
                         </a>
                         <a href="{{ route("calculadora_diferida") }}" class="{{ (isset($page) && $page === "calculadoraD" ) ? 'bg-surface-secondary text-foreground' : 'text-foreground-muted hover:bg-surface-secondary hover:text-foreground' }} rounded px-2 md:px-3 py-2 text-sm font-medium transition-colors">
                             Diferida
+                        </a>
+                        <!-- Added About link to desktop menu -->
+                        <a href="{{ route("about") }}" class="{{ (request()->routeIs('about')) ? 'bg-surface-secondary text-foreground' : 'text-foreground-muted hover:bg-surface-secondary hover:text-foreground' }} rounded px-2 md:px-3 py-2 text-sm font-medium transition-colors">
+                            Acerca de
                         </a>
                         <!-- Added History Link -->
                         @auth
@@ -88,6 +92,10 @@
             </a>
             <a href="{{ route('calculadora_diferida') }}" class="block rounded-md px-3 py-2 text-base font-medium transition-colors">
                 Diferida
+            </a>
+            <!-- Added About link to mobile menu -->
+            <a href="{{ route('about') }}" class="block rounded-md px-3 py-2 text-base font-medium transition-colors">
+                Acerca de
             </a>
             <!-- Added Mobile Auth Links -->
             @auth

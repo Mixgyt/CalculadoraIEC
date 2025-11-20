@@ -8,8 +8,24 @@ use App\Models\CalculationHistory;
 
 class CalculadoraDiferidaController extends Controller
 {
-    public function index(){
-        return view("calculadora_diferida",["page"=>"calculadoraD"]);
+    public function index(Request $request){
+        $prefillData = [];
+        
+        if ($request->has('history_id') && Auth::check()) {
+            $history = CalculationHistory::where('id', $request->history_id)
+                ->where('user_id', Auth::id())
+                ->where('type', 'anualidad_diferida')
+                ->first();
+                
+            if ($history) {
+                $prefillData = $history->input_data;
+            }
+        }
+
+        return view("calculadora_diferida", [
+            "page" => "calculadoraD",
+            "prefillData" => $prefillData
+        ]);
     }
 
     //Calcular Renta

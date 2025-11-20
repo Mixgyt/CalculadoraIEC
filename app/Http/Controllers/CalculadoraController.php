@@ -8,9 +8,25 @@ use App\Models\CalculationHistory;
 
 class CalculadoraController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('calculadora', ["page" => "calculadora"]);
+        $prefillData = [];
+        
+        if ($request->has('history_id') && Auth::check()) {
+            $history = CalculationHistory::where('id', $request->history_id)
+                ->where('user_id', Auth::id())
+                ->where('type', 'anualidad_anticipada')
+                ->first();
+                
+            if ($history) {
+                $prefillData = $history->input_data;
+            }
+        }
+
+        return view('calculadora', [
+            "page" => "calculadora",
+            "prefillData" => $prefillData
+        ]);
     }
 
     public function calcular(Request $request)

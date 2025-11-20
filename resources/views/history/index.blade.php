@@ -84,6 +84,19 @@
                                 @endif
                             </div>
                         </div>
+                        
+                        <!-- Added button to reuse data -->
+                        <div class="mt-4 pt-3 border-t border-border">
+                            @if($item->type == 'anualidad_anticipada')
+                                <a href="{{ route('inicio', ['history_id' => $item->id]) }}" class="block w-full text-center bg-primary/10 hover:bg-primary/20 text-primary text-sm font-medium py-2 rounded transition-colors">
+                                    <i class="fas fa-redo-alt mr-1"></i> Reutilizar Datos
+                                </a>
+                            @elseif($item->type == 'anualidad_diferida')
+                                <a href="{{ route('calculadora_diferida', ['history_id' => $item->id]) }}" class="block w-full text-center bg-primary/10 hover:bg-primary/20 text-primary text-sm font-medium py-2 rounded transition-colors">
+                                    <i class="fas fa-redo-alt mr-1"></i> Reutilizar Datos
+                                </a>
+                            @endif
+                        </div>
                     </div>
                 </div>
             @endforeach
