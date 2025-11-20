@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\CalculationHistory;
 
 class CalculadoraDiferidaController extends Controller
 {
@@ -55,6 +57,16 @@ class CalculadoraDiferidaController extends Controller
                 $periodosDiferimiento,
                 $tipoAnualidad
             );
+
+            if (Auth::check()) {
+                CalculationHistory::create([
+                    'user_id' => Auth::id(),
+                    'type' => 'anualidad_diferida',
+                    'calculation_type' => 'renta', // Currently only calculates renta/anualidad
+                    'input_data' => $request->except('_token'),
+                    'result_data' => $resultado,
+                ]);
+            }
 
             return view("calculadora_diferida", [
                 "page" => "calculadoraD",

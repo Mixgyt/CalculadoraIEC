@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\CalculationHistory;
 
 class CalculadoraController extends Controller
 {
     public function index()
     {
-        return view('calculadora',["page"=>"calculadora"]);
+        return view('calculadora', ["page" => "calculadora"]);
     }
 
     public function calcular(Request $request)
@@ -31,6 +33,17 @@ class CalculadoraController extends Controller
 
         try {
             $resultado = $this->calcularAnualidadAnticipada($validated);
+
+            if (Auth::check()) {
+                CalculationHistory::create([
+                    'user_id' => Auth::id(),
+                    'type' => 'anualidad_anticipada',
+                    'calculation_type' => $validated['tipo_calculo'],
+                    'input_data' => $validated,
+                    'result_data' => $resultado,
+                ]);
+            }
+
             return view('calculadora', compact('resultado'));
         } catch (\Exception $e) {
             return back()
@@ -65,7 +78,7 @@ class CalculadoraController extends Controller
         if ($request->tipo_calculo === 'renta') {
             $tieneCapital = $request->filled('valor_presente') && $request->valor_presente > 0;
             $tieneMonto = $request->filled('monto') && $request->monto > 0;
-            
+
             if (!$tieneCapital && !$tieneMonto) {
                 $request->validate([
                     'valor_presente' => 'required_without:monto|numeric|min:0.01',
@@ -78,7 +91,7 @@ class CalculadoraController extends Controller
         if ($request->tipo_calculo === 'periodos') {
             $tieneCapital = $request->filled('valor_presente') && $request->valor_presente > 0;
             $tieneMonto = $request->filled('monto') && $request->monto > 0;
-            
+
             if (!$tieneCapital && !$tieneMonto) {
                 $request->validate([
                     'valor_presente' => 'required_without:monto|numeric|min:0.01',
@@ -100,29 +113,26 @@ class CalculadoraController extends Controller
     {
         // Convertir tasa a decimal
         $tasaOriginal = $datos['tasa_interes'] / 100;
-        
+
         // Determinar período de capitalización
         $periodoCapitalizacion = $datos['periodo_capitalizacion'] ?? $datos['periodo_tasa'];
-        
+
         // Calcular tasas efectivas
         $tasaEfectivaAnual = $this->calcularTasaEfectivaAnual(
-            $tasaOriginal, 
+            $tasaOriginal,
             $datos['periodo_tasa'],
             $periodoCapitalizacion
         );
 
-        if($periodoCapitalizacion != $datos['periodo_tasa']){
+        if ($periodoCapitalizacion != $datos['periodo_tasa']) {
             $tasaConvertida = $this->convertirDeTasaEfectivaAnual(
-                $tasaEfectivaAnual, 
+                $tasaEfectivaAnual,
                 $datos['periodo_pagos']
             );
-        }
-        else{
+        } else {
             $tasaConvertida = $tasaOriginal;
         }
 
-        
-        
         // Preparar resultado base
         $resultado = [
             'tipo_calculo' => $datos['tipo_calculo'],
@@ -134,13 +144,13 @@ class CalculadoraController extends Controller
             'tasa_efectiva_anual' => $tasaEfectivaAnual,
             'tasa_efectiva_anual_porcentaje' => $tasaEfectivaAnual * 100,
         ];
-        
+
         // Agregar información de capitalización si es diferente
         if ($periodoCapitalizacion !== $datos['periodo_tasa']) {
             $resultado['periodo_capitalizacion'] = $periodoCapitalizacion;
             $resultado['tasa_nominal_anual'] = $this->calcularTasaNominalAnual(
-                $tasaOriginal, 
-                $datos['periodo_tasa'], 
+                $tasaOriginal,
+                $datos['periodo_tasa'],
                 $periodoCapitalizacion
             );
             $resultado['tasa_nominal_anual_porcentaje'] = $resultado['tasa_nominal_anual'] * 100;
@@ -149,7 +159,7 @@ class CalculadoraController extends Controller
         // Realizar cálculo específico
         $metodoCalculo = $this->obtenerMetodoCalculo($datos['tipo_calculo']);
         $resultadoCalculo = $this->$metodoCalculo($datos, $tasaConvertida);
-        
+
         return array_merge($resultado, $resultadoCalculo);
     }
 
@@ -169,17 +179,17 @@ class CalculadoraController extends Controller
     private function calcularRenta(array $datos, float $i): array
     {
         $n = $datos['numero_periodos'];
-        
+
         // Determinar si se calcula desde Capital o Monto
         if (isset($datos['valor_presente']) && $datos['valor_presente'] > 0) {
             return $this->calcularRentaDesdeCapital($datos, $i);
         } elseif (isset($datos['monto']) && $datos['monto'] > 0) {
             return $this->calcularRentaDesdeMonto($datos, $i);
         }
-        
+
         throw new \Exception('Se requiere Capital (C) o Monto (M) para calcular la renta.');
     }
-    
+
     /**
      * Calcula renta desde el Capital (C)
      * Fórmula: R = C / [((1 - (1+i)^-n) / i) * (1+i)]
@@ -188,7 +198,7 @@ class CalculadoraController extends Controller
     {
         $C = $datos['valor_presente'];
         $n = $datos['numero_periodos'];
-        
+
         if ($i == 0) {
             $renta = $C / $n;
         } else {
@@ -197,10 +207,10 @@ class CalculadoraController extends Controller
             // Ajustar para anualidad anticipada
             $renta = $C / ($factorVPOrdinario * (1 + $i));
         }
-        
+
         $totalPagado = $renta * $n;
         $interesesTotales = $totalPagado - $C;
-        
+
         return [
             'valor_calculado' => $renta,
             'nombre_calculado' => 'Renta (R)',
@@ -212,7 +222,7 @@ class CalculadoraController extends Controller
             'calculado_desde' => 'capital',
         ];
     }
-    
+
     /**
      * Calcula renta desde el Monto (M)
      * Fórmula: R = M / [((1+i)^n - 1) / i) * (1+i)]
@@ -221,7 +231,7 @@ class CalculadoraController extends Controller
     {
         $M = $datos['monto'];
         $n = $datos['numero_periodos'];
-        
+
         if ($i == 0) {
             $renta = $M / $n;
         } else {
@@ -230,10 +240,10 @@ class CalculadoraController extends Controller
             // Ajustar para anualidad anticipada
             $renta = $M / ($factorMontoOrdinario * (1 + $i));
         }
-        
+
         $totalDepositado = $renta * $n;
         $interesesGanados = $M - $totalDepositado;
-        
+
         return [
             'valor_calculado' => $renta,
             'nombre_calculado' => 'Renta (R)',
@@ -255,7 +265,7 @@ class CalculadoraController extends Controller
     {
         $R = $datos['renta'];
         $n = $datos['numero_periodos'];
-        
+
         if ($i == 0) {
             $valorPresente = $R * $n;
         } else {
@@ -264,10 +274,10 @@ class CalculadoraController extends Controller
             // Ajustar para anualidad anticipada
             $valorPresente = $R * $factorVPOrdinario * (1 + $i);
         }
-        
+
         $totalPagos = $R * $n;
         $interesesGanados = $totalPagos - $valorPresente;
-        
+
         return [
             'valor_calculado' => $valorPresente,
             'nombre_calculado' => 'Capital (C)',
@@ -288,7 +298,7 @@ class CalculadoraController extends Controller
     {
         $R = $datos['renta'];
         $n = $datos['numero_periodos'];
-        
+
         if ($i == 0) {
             $monto = $R * $n;
         } else {
@@ -297,10 +307,10 @@ class CalculadoraController extends Controller
             // Ajustar para anualidad anticipada
             $monto = $R * $factorMontoOrdinario * (1 + $i);
         }
-        
+
         $totalDepositado = $R * $n;
         $interesesGanados = $monto - $totalDepositado;
-        
+
         return [
             'valor_calculado' => $monto,
             'nombre_calculado' => 'Monto (M)',
@@ -319,14 +329,14 @@ class CalculadoraController extends Controller
     private function calcularPeriodos(array $datos, float $i): array
     {
         $R = $datos['renta'];
-        
+
         // Determinar si se calcula desde Capital o Monto
         if (isset($datos['valor_presente']) && $datos['valor_presente'] > 0) {
             return $this->calcularPeriodosDesdeCapital($datos, $i);
         } elseif (isset($datos['monto']) && $datos['monto'] > 0) {
             return $this->calcularPeriodosDesdeMonto($datos, $i);
         }
-        
+
         throw new \Exception('Se requiere Capital (C) o Monto (M) para calcular períodos.');
     }
 
@@ -338,33 +348,33 @@ class CalculadoraController extends Controller
     {
         $C = $datos['valor_presente'];
         $R = $datos['renta'];
-        
+
         if ($i == 0) {
             $numPeriodos = $C / $R;
         } else {
             // Validar que los valores permitan el cálculo
             $rentaAjustada = $R * (1 + $i);
-            
+
             if ($rentaAjustada <= 0) {
                 throw new \Exception('La renta debe ser mayor a cero.');
             }
-            
+
             $factor = 1 - ($C * $i) / $rentaAjustada;
-            
+
             if ($factor <= 0) {
                 throw new \Exception('La renta es insuficiente para pagar el capital con la tasa dada. Aumenta la renta.');
             }
-            
+
             if ($factor >= 1) {
                 throw new \Exception('El capital es menor o igual a la primera renta. Se requiere máximo 1 pago.');
             }
-            
+
             $numPeriodos = -log($factor) / log(1 + $i);
         }
-        
+
         $periodoCompleto = ceil($numPeriodos);
         $periodoExacto = $numPeriodos;
-        
+
         // Calcular último pago ajustado si no es exacto
         $ultimoPago = $R;
         if (abs($periodoExacto - $periodoCompleto) > 0.01) {
@@ -372,9 +382,9 @@ class CalculadoraController extends Controller
             $C_penultimo = $R * ((1 - pow(1 + $i, -($periodoCompleto - 1))) / $i) * (1 + $i);
             $ultimoPago = ($C - $C_penultimo) / (1 + $i);
         }
-        
+
         $totalPagado = ($R * ($periodoCompleto - 1)) + $ultimoPago;
-        
+
         return [
             'valor_calculado' => $periodoCompleto,
             'nombre_calculado' => 'Número de Períodos (n)',
@@ -394,32 +404,32 @@ class CalculadoraController extends Controller
     {
         $M = $datos['monto'];
         $R = $datos['renta'];
-        
+
         if ($i == 0) {
             $numPeriodos = $M / $R;
         } else {
             $rentaAjustada = $R * (1 + $i);
-            
+
             if ($rentaAjustada <= 0) {
                 throw new \Exception('La renta debe ser mayor a cero.');
             }
-            
+
             if ($M <= 0) {
                 throw new \Exception('El monto debe ser mayor a cero.');
             }
-            
+
             $factor = 1 + ($M * $i) / $rentaAjustada;
-            
+
             if ($factor <= 1) {
                 throw new \Exception('El monto es menor que la primera renta. Se requiere máximo 1 depósito.');
             }
-            
+
             $numPeriodos = log($factor) / log(1 + $i);
         }
-        
+
         $periodoCompleto = ceil($numPeriodos);
         $periodoExacto = $numPeriodos;
-        
+
         // Calcular último depósito ajustado si no es exacto
         $ultimoDeposito = $R;
         if (abs($periodoExacto - $periodoCompleto) > 0.01) {
@@ -427,10 +437,10 @@ class CalculadoraController extends Controller
             $M_penultimo = $R * ((pow(1 + $i, $periodoCompleto - 1) - 1) / $i) * (1 + $i);
             $ultimoDeposito = ($M - $M_penultimo * (1 + $i)) / (1 + $i);
         }
-        
+
         $totalDepositado = ($R * ($periodoCompleto - 1)) + $ultimoDeposito;
         $interesesGanados = $M - $totalDepositado;
-        
+
         return [
             'valor_calculado' => $periodoCompleto,
             'nombre_calculado' => 'Número de Períodos (n)',
@@ -453,14 +463,14 @@ class CalculadoraController extends Controller
             $m = $this->obtenerFrecuencia($periodoTasa);
             return pow(1 + $tasa, $m) - 1;
         }
-        
+
         // Primero convertir a tasa nominal anual
         $tasaNominalAnual = $this->calcularTasaNominalAnual($tasa, $periodoTasa, $periodoCapitalizacion);
-        
+
         // Luego calcular la tasa efectiva anual
         return $this->convertirNominalAEfectiva($tasaNominalAnual, $periodoCapitalizacion);
     }
-    
+
     /**
      * Calcula la tasa nominal anual a partir de una tasa de período
      */
@@ -469,11 +479,11 @@ class CalculadoraController extends Controller
         // Convertir la tasa del período a tasa efectiva anual
         $m = $this->obtenerFrecuencia($periodoTasa);
         $tasaEfectivaAnual = pow(1 + $tasa, $m) - 1;
-        
+
         // Convertir tasa efectiva anual a nominal con la capitalización deseada
         return $this->convertirEfectivaANominal($tasaEfectivaAnual, $periodoCapitalizacion);
     }
-    
+
     /**
      * Convierte tasa efectiva anual a tasa nominal
      */
@@ -482,11 +492,11 @@ class CalculadoraController extends Controller
         if ($periodoCapitalizacion === 'continuo') {
             return log(1 + $tasaEfectiva);
         }
-        
+
         $n = $this->obtenerFrecuencia($periodoCapitalizacion);
         return $n * (pow(1 + $tasaEfectiva, 1 / $n) - 1);
     }
-    
+
     /**
      * Convierte tasa nominal a tasa efectiva anual
      */
@@ -495,7 +505,7 @@ class CalculadoraController extends Controller
         if ($periodoCapitalizacion === 'continuo') {
             return exp($tasaNominal) - 1;
         }
-        
+
         $n = $this->obtenerFrecuencia($periodoCapitalizacion);
         return pow(1 + $tasaNominal / $n, $n) - 1;
     }
