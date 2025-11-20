@@ -30,17 +30,49 @@
                 <div class="hidden sm:ml-6 sm:block">
                     <div class="flex space-x-2 md:space-x-4">
                         <a href="{{ route("inicio") }}" class="{{ (isset($page) && $page === "calculadora" ) ? 'bg-surface-secondary text-foreground' : 'text-foreground-muted hover:bg-surface-secondary hover:text-foreground' }} rounded-md px-2 md:px-3 py-2 text-sm font-medium transition-colors">
-                            Caluladora
+                            Anticipadas
                         </a>
-                        <a href="#" class="{{ (isset($page) && $page === "creditos" ) ? 'bg-surface-secondary text-foreground' : 'text-foreground-muted hover:bg-surface-secondary hover:text-foreground' }} rounded px-2 md:px-3 py-2 text-sm font-medium transition-colors">
-                            Creditos
+                        <a href="{{ route("calculadora_diferida") }}" class="{{ (isset($page) && $page === "calculadoraD" ) ? 'bg-surface-secondary text-foreground' : 'text-foreground-muted hover:bg-surface-secondary hover:text-foreground' }} rounded px-2 md:px-3 py-2 text-sm font-medium transition-colors">
+                            Diferida
                         </a>
+                        <!-- Added About link to desktop menu -->
+                        <a href="{{ route("about") }}" class="{{ (request()->routeIs('about')) ? 'bg-surface-secondary text-foreground' : 'text-foreground-muted hover:bg-surface-secondary hover:text-foreground' }} rounded px-2 md:px-3 py-2 text-sm font-medium transition-colors">
+                            Acerca de
+                        </a>
+                        <!-- Added History Link -->
+                        @auth
+                        <a href="{{ route("historial") }}" class="{{ (request()->routeIs('historial')) ? 'bg-surface-secondary text-foreground' : 'text-foreground-muted hover:bg-surface-secondary hover:text-foreground' }} rounded px-2 md:px-3 py-2 text-sm font-medium transition-colors">
+                            Historial
+                        </a>
+                        @endauth
                     </div>
                 </div>
             </div>
 
-            <!-- Theme Toggle Button -->
-            <div class="flex items-center">
+            <!-- Added Auth Buttons -->
+            <div class="flex items-center gap-2">
+                @auth
+                    <div class="hidden sm:flex items-center gap-4 mr-4">
+                        <span class="text-sm text-foreground-muted">Hola, {{ Auth::user()->name }}</span>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="text-sm text-red-500 hover:text-red-600 font-medium">
+                                Salir
+                            </button>
+                        </form>
+                    </div>
+                @else
+                    <div class="hidden sm:flex items-center gap-2 mr-4">
+                        <a href="{{ route('login') }}" class="text-sm font-medium text-foreground-muted hover:text-foreground">
+                            Iniciar Sesión
+                        </a>
+                        <a href="{{ route('register') }}" class="text-sm font-medium bg-primary text-primary-foreground px-3 py-1.5 rounded-md hover:bg-primary/90">
+                            Registrarse
+                        </a>
+                    </div>
+                @endauth
+
+                <!-- Theme Toggle Button -->
                 <button type="button" id="theme-toggle" class="rounded-md p-2 text-foreground-muted hover:bg-background hover:text-foreground focus:outline-2 focus:-outline-offset-1 focus:outline-primary transition-colors" title="Cambiar tema">
                     <span class="sr-only">Cambiar tema</span>
                     <!-- Sun icon (light mode) -->
@@ -55,12 +87,40 @@
     <!-- Mobile menu -->
     <div id="mobile-menu" class="hidden sm:hidden bg-surface border-t border-border">
         <div class="space-y-1 px-2 pb-3 pt-2">
-            <a href="/inicio" class="block rounded-md px-3 py-2 text-base font-medium transition-colors">
+            <a href="{{ route('inicio') }}" class="block rounded-md px-3 py-2 text-base font-medium transition-colors">
                 Calculadora
             </a>
-            <a href="#" class="block rounded-md px-3 py-2 text-base font-medium transition-colors">
-                Creditos
+            <a href="{{ route('calculadora_diferida') }}" class="block rounded-md px-3 py-2 text-base font-medium transition-colors">
+                Diferida
             </a>
+            <!-- Added About link to mobile menu -->
+            <a href="{{ route('about') }}" class="block rounded-md px-3 py-2 text-base font-medium transition-colors">
+                Acerca de
+            </a>
+            <!-- Added Mobile Auth Links -->
+            @auth
+                <a href="{{ route('historial') }}" class="block rounded-md px-3 py-2 text-base font-medium transition-colors">
+                    Historial
+                </a>
+                <div class="border-t border-border my-2 pt-2">
+                    <div class="px-3 py-2 text-sm text-foreground-muted">Hola, {{ Auth::user()->name }}</div>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-red-500 hover:bg-surface-secondary">
+                            Cerrar Sesión
+                        </button>
+                    </form>
+                </div>
+            @else
+                <div class="border-t border-border my-2 pt-2">
+                    <a href="{{ route('login') }}" class="block rounded-md px-3 py-2 text-base font-medium transition-colors">
+                        Iniciar Sesión
+                    </a>
+                    <a href="{{ route('register') }}" class="block rounded-md px-3 py-2 text-base font-medium transition-colors text-primary">
+                        Registrarse
+                    </a>
+                </div>
+            @endauth
         </div>
     </div>
 </nav>

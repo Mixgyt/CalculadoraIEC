@@ -3,11 +3,29 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\CalculationHistory;
 
 class CalculadoraDiferidaController extends Controller
 {
-    public function index(){
-        return view("calculadora_diferida",["page"=>"calculadoraD"]);
+    public function index(Request $request){
+        $prefillData = [];
+        
+        if ($request->has('history_id') && Auth::check()) {
+            $history = CalculationHistory::where('id', $request->history_id)
+                ->where('user_id', Auth::id())
+                ->where('type', 'anualidad_diferida')
+                ->first();
+                
+            if ($history) {
+                $prefillData = $history->input_data;
+            }
+        }
+
+        return view("calculadora_diferida", [
+            "page" => "calculadoraD",
+            "prefillData" => $prefillData
+        ]);
     }
 
     //Calcular Renta
@@ -55,6 +73,16 @@ class CalculadoraDiferidaController extends Controller
                 $periodosDiferimiento,
                 $tipoAnualidad
             );
+
+            if (Auth::check()) {
+                CalculationHistory::create([
+                    'user_id' => Auth::id(),
+                    'type' => 'anualidad_diferida',
+                    'calculation_type' => 'renta', // Currently only calculates renta/anualidad
+                    'input_data' => $request->except('_token'),
+                    'result_data' => $resultado,
+                ]);
+            }
 
             return view("calculadora_diferida", [
                 "page" => "calculadoraD",

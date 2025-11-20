@@ -35,7 +35,7 @@
                                            name="capital" 
                                            class="w-full pl-8 pr-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-foreground"
                                            placeholder="10000.00"
-                                           value="{{ old('capital') }}"
+                                           value="{{ old('capital', $prefillData['capital'] ?? '') }}"
                                            required>
                                 </div>
                                 <p class="text-xs text-foreground-muted mt-1">Monto inicial de la inversión</p>
@@ -53,7 +53,7 @@
                                            name="tasa_nominal" 
                                            class="w-full px-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-foreground"
                                            placeholder="12.00"
-                                           value="{{ old('tasa_nominal') }}"
+                                           value="{{ old('tasa_nominal', $prefillData['tasa_nominal'] ?? '') }}"
                                            required>
                                     <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-foreground-muted">%</span>
                                 </div>
@@ -70,10 +70,10 @@
                                         class="w-full px-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-foreground"
                                         required>
                                     <option value="">Seleccionar capitalización</option>
-                                    <option value="anual" {{ old('capitalizacion') == 'anual' ? 'selected' : '' }}>Anual (1 vez por año)</option>
-                                    <option value="semestral" {{ old('capitalizacion') == 'semestral' ? 'selected' : '' }}>Semestral (2 veces por año)</option>
-                                    <option value="trimestral" {{ old('capitalizacion') == 'trimestral' ? 'selected' : '' }}>Trimestral (4 veces por año)</option>
-                                    <option value="mensual" {{ old('capitalizacion') == 'mensual' ? 'selected' : '' }}>Mensual (12 veces por año)</option>
+                                    <option value="anual" {{ old('capitalizacion', $prefillData['capitalizacion'] ?? '') == 'anual' ? 'selected' : '' }}>Anual (1 vez por año)</option>
+                                    <option value="semestral" {{ old('capitalizacion', $prefillData['capitalizacion'] ?? '') == 'semestral' ? 'selected' : '' }}>Semestral (2 veces por año)</option>
+                                    <option value="trimestral" {{ old('capitalizacion', $prefillData['capitalizacion'] ?? '') == 'trimestral' ? 'selected' : '' }}>Trimestral (4 veces por año)</option>
+                                    <option value="mensual" {{ old('capitalizacion', $prefillData['capitalizacion'] ?? '') == 'mensual' ? 'selected' : '' }}>Mensual (12 veces por año)</option>
                                 </select>
                                 <p class="text-xs text-foreground-muted mt-1">Frecuencia con la que se capitaliza el interés</p>
                             </div>
@@ -88,10 +88,10 @@
                                         class="w-full px-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-foreground"
                                         required>
                                     <option value="">Seleccionar tipo de período</option>
-                                    <option value="mensual" {{ old('tipo_periodo') == 'mensual' ? 'selected' : '' }}>Mensual</option>
-                                    <option value="trimestral" {{ old('tipo_periodo') == 'trimestral' ? 'selected' : '' }}>Trimestral</option>
-                                    <option value="semestral" {{ old('tipo_periodo') == 'semestral' ? 'selected' : '' }}>Semestral</option>
-                                    <option value="anual" {{ old('tipo_periodo') == 'anual' ? 'selected' : '' }}>Anual</option>
+                                    <option value="mensual" {{ old('tipo_periodo', $prefillData['tipo_periodo'] ?? '') == 'mensual' ? 'selected' : '' }}>Mensual</option>
+                                    <option value="trimestral" {{ old('tipo_periodo', $prefillData['tipo_periodo'] ?? '') == 'trimestral' ? 'selected' : '' }}>Trimestral</option>
+                                    <option value="semestral" {{ old('tipo_periodo', $prefillData['tipo_periodo'] ?? '') == 'semestral' ? 'selected' : '' }}>Semestral</option>
+                                    <option value="anual" {{ old('tipo_periodo', $prefillData['tipo_periodo'] ?? '') == 'anual' ? 'selected' : '' }}>Anual</option>
                                 </select>
                                 <p class="text-xs text-foreground-muted mt-1">Frecuencia de los pagos de la anualidad</p>
                             </div>
@@ -108,7 +108,7 @@
                                            min="1"
                                            class="w-full px-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-foreground"
                                            placeholder="24"
-                                           value="{{ old('periodos_pago') }}"
+                                           value="{{ old('periodos_pago', $prefillData['periodos_pago'] ?? '') }}"
                                            required>
                                     <p class="text-xs text-foreground-muted mt-1">Número de pagos de la anualidad</p>
                                 </div>
@@ -123,7 +123,7 @@
                                            min="0"
                                            class="w-full px-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-foreground"
                                            placeholder="6"
-                                           value="{{ old('periodos_diferimiento') }}"
+                                           value="{{ old('periodos_diferimiento', $prefillData['periodos_diferimiento'] ?? '') }}"
                                            required>
                                     <p class="text-xs text-foreground-muted mt-1">Períodos sin pagos antes de empezar</p>
                                 </div>
@@ -140,7 +140,7 @@
                                                name="tipo_anualidad" 
                                                value="ordinaria" 
                                                class="text-primary focus:ring-primary border-border mr-3"
-                                               {{ old('tipo_anualidad', 'ordinaria') == 'ordinaria' ? 'checked' : '' }}
+                                               {{ old('tipo_anualidad', $prefillData['tipo_anualidad'] ?? 'ordinaria') == 'ordinaria' ? 'checked' : '' }}
                                                required>
                                         <div>
                                             <div class="font-medium text-foreground">Ordinaria (Vencida)</div>
@@ -152,7 +152,7 @@
                                                name="tipo_anualidad" 
                                                value="anticipada" 
                                                class="text-primary focus:ring-primary border-border mr-3"
-                                               {{ old('tipo_anualidad') == 'anticipada' ? 'checked' : '' }}
+                                               {{ old('tipo_anualidad', $prefillData['tipo_anualidad'] ?? '') == 'anticipada' ? 'checked' : '' }}
                                                required>
                                         <div>
                                             <div class="font-medium text-foreground">Anticipada</div>
