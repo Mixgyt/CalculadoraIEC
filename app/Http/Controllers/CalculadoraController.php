@@ -210,6 +210,7 @@ class CalculadoraController extends Controller
             'intereses_totales' => $interesesTotales,
             'descripcion' => 'Pago periódico desde capital',
             'calculado_desde' => 'capital',
+            'tipo_formula' => 'renta_desde_capital',
         ];
     }
     
@@ -243,6 +244,7 @@ class CalculadoraController extends Controller
             'intereses_ganados' => $interesesGanados,
             'descripcion' => 'Depósito periódico desde monto',
             'calculado_desde' => 'monto',
+            'tipo_formula' => 'renta_desde_monto',
         ];
     }
 
@@ -276,6 +278,7 @@ class CalculadoraController extends Controller
             'total_pagos' => $totalPagos,
             'intereses_ganados' => $interesesGanados,
             'descripcion' => 'Valor presente de la anualidad',
+            'tipo_formula' => 'capital',
         ];
     }
 
@@ -309,6 +312,7 @@ class CalculadoraController extends Controller
             'total_depositado' => $totalDepositado,
             'intereses_ganados' => $interesesGanados,
             'descripcion' => 'Monto (Valor futuro de la anualidad)',
+            'tipo_formula' => 'monto',
         ];
     }
 
@@ -383,6 +387,7 @@ class CalculadoraController extends Controller
             'renta' => $R,
             'descripcion' => 'Períodos necesarios para amortizar',
             'calculado_desde' => 'capital',
+            'tipo_formula' => 'periodos_desde_capital',
         ];
     }
 
@@ -440,6 +445,7 @@ class CalculadoraController extends Controller
             'intereses_ganados' => $interesesGanados,
             'descripcion' => 'Períodos necesarios para acumular',
             'calculado_desde' => 'monto',
+            'tipo_formula' => 'periodos_desde_monto',
         ];
     }
 
