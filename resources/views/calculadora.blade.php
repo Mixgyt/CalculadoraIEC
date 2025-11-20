@@ -520,10 +520,13 @@
             </div>
         </div>
     </div>
-    
+    @php(
+        // Definir el tipo de cálculo predeterminado
+        $tipoCalculoPredeterminado = old('tipo_calculo', $prefillData['tipo_calculo'] ?? 'renta')
+    )
     <script>
         // Variable para el tipo de cálculo del servidor
-        const tipoCalculoServidor = '{{ $resultado['tipo_calculo'] ?? 'renta' }}';
+        const tipoCalculoServidor = "{{ $tipoCalculoPredeterminado ?? 'renta' }}";
         
         const mensajesAyuda = {
             'renta': {

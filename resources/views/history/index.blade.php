@@ -43,10 +43,14 @@
                             <div class="flex justify-between">
                                 <span class="text-foreground-muted">Resultado:</span>
                                 <span class="font-bold text-foreground">
-                                    @if(isset($item->result_data['renta']))
+                                    @if(isset($item->result_data['valor_calculado']))
+                                        @if($item->result_data['tipo_calculo'] == 'periodos')
+                                            {{ $item->result_data['valor_calculado'] }} periodos
+                                        @else
+                                            ${{ number_format($item->result_data['valor_calculado'], 2) }}
+                                        @endif
+                                    @elseif( isset($item->result_data['renta']))
                                         ${{ number_format($item->result_data['renta'], 2) }}
-                                    @elseif(isset($item->result_data['valor_calculado']))
-                                        ${{ number_format($item->result_data['valor_calculado'], 2) }}
                                     @else
                                         N/A
                                     @endif
