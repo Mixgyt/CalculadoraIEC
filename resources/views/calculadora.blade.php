@@ -23,7 +23,27 @@
                             @csrf
                             
                             <!-- Tipo de Cálculo -->
+
                             <div>
+                                <label for="tipo_calculo" class="block text-sm font-medium text-foreground mb-2">
+                                    ¿Qué deseas calcular? <span class="text-danger">*</span>
+                                </label>
+                                <div class="flex flex-wrap gap-1">
+                                    <button onclick="seleccionarTipoCalculo('tiporenta')" type="button" id="tiporenta" class="flex items-center gap-2 px-3 py-3 rounded-lg transition-all duration-300 ease-in-out border-2 border-border hover:border-primary hover:scale-105 transform">
+                                        <span class="text-xl"><i class="fa fa-coins"></i></span><span class="font-medium">Renta</span>
+                                    </button>
+                                    <button onclick="seleccionarTipoCalculo('tipovalor_presente')" type="button" id="tipovalor_presente" class="flex items-center gap-2 px-3 py-3 rounded-lg transition-all duration-300 ease-in-out border-2 border-border hover:border-primary hover:scale-105 transform">
+                                        <span class="text-xl"><i class="fa fa-money-bill"></i></span><span class="font-medium">Capital</span>
+                                    </button>
+                                    <button onclick="seleccionarTipoCalculo('tipomonto')" type="button" id="tipomonto" class="flex items-center gap-2 px-3 py-3 rounded-lg transition-all duration-300 ease-in-out border-2 border-border hover:border-primary hover:scale-105 transform">
+                                        <span class="text-xl"><i class="fa fa-money-bill-trend-up"></i></span><span class="font-medium">Monto</span>
+                                    </button>
+                                    <button onclick="seleccionarTipoCalculo('tipoperiodos')" type="button" id="tipoperiodos" class="flex items-center gap-2 px-3 py-3 rounded-lg transition-all duration-300 ease-in-out border-2 border-border hover:border-primary hover:scale-105 transform">
+                                        <span class="text-xl"><i class="fa fa-calendar"></i></span><span class="font-medium">Periodo</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="hidden">
                                 <label for="tipo_calculo" class="block text-sm font-medium text-foreground mb-2">
                                     ¿Qué deseas calcular? <span class="text-danger">*</span>
                                 </label>
@@ -395,8 +415,11 @@
             </div>
         </div>
     </div>
-
+    
     <script>
+        // Variable para el tipo de cálculo del servidor
+        const tipoCalculoServidor = '{{ $resultado['tipo_calculo'] ?? 'renta' }}';
+        
         const mensajesAyuda = {
             'renta': {
                 campos: ['capital', 'monto', 'periodos'],
@@ -415,6 +438,8 @@
                 mensaje: 'Necesitas: (Capital (C) O Monto (M)) y Renta (R)'
             }
         };
+
+        let tipoSeleccionado = 'renta';
 
         function mostrarCamposSegunTipo() {
             const tipo = document.getElementById('tipo_calculo').value;
@@ -477,7 +502,28 @@
                 });
             });
             
+            tipoSeleccionado = tipoCalculo.value || 'renta';
+            seleccionarTipoCalculo('tipo'+tipoSeleccionado);
             mostrarCamposSegunTipo();
         });
+
+        function seleccionarTipoCalculo(id){
+            // Remover clase de todos los botones
+            const buttonAnterior = document.getElementById('tipo'+tipoSeleccionado);
+            buttonAnterior.classList.remove('bg-primary','text-white');
+            //buttonAnterior.classList.add('border-border');
+
+            const button = document.getElementById(id);
+            //button.classList.remove('border-border');
+            button.classList.add('bg-primary','text-white');
+            tipoSeleccionado = id.replace('tipo','');
+            document.getElementById('tipo_calculo').value = tipoSeleccionado;
+            mostrarCamposSegunTipo();
+        }
+
+        // Seleccionar el tipo de cálculo basado en el valor enviado desde el servidor
+        if (tipoCalculoServidor) {
+            seleccionarTipoCalculo('tipo' + tipoCalculoServidor);
+        }
     </script>
 @endsection
