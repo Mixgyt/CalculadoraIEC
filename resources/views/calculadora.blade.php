@@ -10,6 +10,21 @@
                 <p class="text-foreground-muted text-lg max-w-3xl mx-auto">Calcula Renta, Capital, Monto o Períodos con conversión automática de tasas</p>
             </div>
 
+            <!-- Ejemplos Precargados -->
+            <div class="mb-8 px-4">
+                <h3 class="text-lg font-bold text-foreground mb-4">Ejemplos Precargados:</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    @foreach($ejemplos as $idx => $ejemplo)
+                    <button type="button" 
+                            onclick="cargarEjemplo({{ $idx }})"
+                            class="bg-primary/10 hover:bg-primary/20 border-2 border-primary/30 hover:border-primary text-foreground rounded-lg p-4 transition-all duration-200 text-left">
+                        <h4 class="font-semibold text-primary mb-1">{{ $ejemplo['nombre'] }}</h4>
+                        <p class="text-xs text-foreground-muted">{{ $ejemplo['descripcion'] }}</p>
+                    </button>
+                    @endforeach
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                 <!-- Formulario -->
                 <div class="bg-surface border border-border rounded-lg shadow-sm">
@@ -484,8 +499,47 @@
                             </div>
                         </div>
 
+                        <!-- Tabla de Amortización ( -->
+                        @if(!empty($tablaAmortizacion))
+                        <div class="bg-surface border border-border rounded-lg shadow-sm">
+                            <div class="px-6 py-4 border-b border-border">
+                                <h3 class="text-lg font-bold text-foreground">Tabla de Amortización</h3>
+                                <p class="text-sm text-foreground-muted mt-1">Primeros 12 períodos (primeras 12 filas)</p>
+                            </div>
+                            <div class="px-6 py-4 overflow-x-auto">
+                                <table class="w-full text-sm">
+                                    <thead>
+                                        <tr class="border-b border-border">
+                                            <th class="text-left py-2 px-2 text-foreground-muted font-semibold">Período</th>
+                                            <th class="text-right py-2 px-2 text-foreground-muted font-semibold">Renta</th>
+                                            <th class="text-right py-2 px-2 text-foreground-muted font-semibold">Interés</th>
+                                            <th class="text-right py-2 px-2 text-foreground-muted font-semibold">Capital</th>
+                                            <th class="text-right py-2 px-2 text-foreground-muted font-semibold">Saldo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($tablaAmortizacion as $fila)
+                                        <tr class="border-b border-border/30 hover:bg-primary/5 transition">
+                                            <td class="py-2 px-2 text-foreground">{{ $fila['periodo'] }}</td>
+                                            <td class="py-2 px-2 text-right text-foreground">${{ number_format($fila['renta'], 2) }}</td>
+                                            <td class="py-2 px-2 text-right text-foreground">{{ number_format($fila['interes'], 2) }}</td>
+                                            <td class="py-2 px-2 text-right text-foreground">{{ number_format($fila['capital'], 2) }}</td>
+                                            <td class="py-2 px-2 text-right text-primary font-semibold">${{ number_format($fila['saldo'], 2) }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                @if($resultado['numero_periodos'] > 12)
+                                <p class="text-xs text-foreground-muted mt-4 italic">
+                                    * Tabla mostrando los primeros 12 períodos de {{ $resultado['numero_periodos'] }} total
+                                </p>
+                                @endif
+                            </div>
+                        </div>
+                        @endif
+
                     @else
-                        <!-- Info Inicial -->
+      
                         <div class="bg-surface border border-border rounded-lg shadow-sm">
                             <div class="p-12 text-center">
                                 <svg class="w-16 h-16 text-foreground-muted mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -632,6 +686,43 @@
         // Seleccionar el tipo de cálculo basado en el valor enviado desde el servidor
         if (tipoCalculoServidor) {
             seleccionarTipoCalculo('tipo' + tipoCalculoServidor);
+        }
+
+        // Datos de ejemplos
+        const ejemplosData = {!! json_encode($ejemplos) !!};
+
+        function cargarEjemplo(indice) {
+            const ejemplo = ejemplosData[indice];
+            
+            // Cargar tipo de cálculo
+            seleccionarTipoCalculo('tipo' + ejemplo.tipo_calculo);
+            document.getElementById('tipo_calculo').value = ejemplo.tipo_calculo;
+            
+            // Cargar campos según disponibilidad
+            if (ejemplo.valor_presente) {
+                document.getElementById('valor_presente').value = ejemplo.valor_presente;
+            }
+            if (ejemplo.renta) {
+                document.getElementById('renta').value = ejemplo.renta;
+            }
+            if (ejemplo.monto) {
+                document.getElementById('monto').value = ejemplo.monto;
+            }
+            if (ejemplo.numero_periodos) {
+                document.getElementById('numero_periodos').value = ejemplo.numero_periodos;
+            }
+            
+            // Cargar tasa
+            document.getElementById('tasa_interes').value = ejemplo.tasa_interes;
+            document.getElementById('periodo_tasa').value = ejemplo.periodo_tasa;
+            document.getElementById('periodo_capitalizacion').value = ejemplo.periodo_capitalizacion || '';
+            document.getElementById('periodo_pagos').value = ejemplo.periodo_pagos;
+            
+            // Mostrar campos
+            mostrarCamposSegunTipo();
+            
+            // Scroll al formulario
+            document.getElementById('calculadora-form').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
 @endsection

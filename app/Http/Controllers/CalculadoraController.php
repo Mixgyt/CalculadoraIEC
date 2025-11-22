@@ -11,6 +11,8 @@ class CalculadoraController extends Controller
     public function index(Request $request)
     {
         $prefillData = [];
+        $tablaAmortizacion = [];
+        $ejemplos = $this->obtenerEjemplos();
         
         if ($request->has('history_id') && Auth::check()) {
             $history = CalculationHistory::where('id', $request->history_id)
@@ -25,7 +27,9 @@ class CalculadoraController extends Controller
 
         return view('calculadora', [
             "page" => "calculadora",
-            "prefillData" => $prefillData
+            "prefillData" => $prefillData,
+            "tablaAmortizacion" => $tablaAmortizacion,
+            "ejemplos" => $ejemplos
         ]);
     }
 
@@ -50,6 +54,13 @@ class CalculadoraController extends Controller
         try {
             $resultado = $this->calcularAnualidadAnticipada($validated);
 
+            // Generar tabla de amortización si es cálculo de renta desde capital
+            $tablaAmortizacion = [];
+            if ($validated['tipo_calculo'] === 'renta' && isset($validated['valor_presente']) && $validated['valor_presente'] > 0) {
+                $tasaConvertida = $resultado['tasa_convertida'];
+                $tablaAmortizacion = $this->generarTablaAmortizacion($resultado, $tasaConvertida);
+            }
+
             if (Auth::check()) {
                 CalculationHistory::create([
                     'user_id' => Auth::id(),
@@ -60,7 +71,10 @@ class CalculadoraController extends Controller
                 ]);
             }
 
-            return view('calculadora', compact('resultado'));
+            $ejemplos = $this->obtenerEjemplos();
+            $prefillData = [];
+            
+            return view('calculadora', compact('resultado', 'tablaAmortizacion', 'ejemplos', 'prefillData'));
         } catch (\Exception $e) {
             return back()
                 ->withErrors(['error' => $e->getMessage()])
@@ -215,6 +229,14 @@ class CalculadoraController extends Controller
         $C = $datos['valor_presente'];
         $n = $datos['numero_periodos'];
 
+        if ($C <= 0) {
+            throw new \Exception('El capital debe ser mayor a cero.');
+        }
+
+        if ($n <= 0) {
+            throw new \Exception('El número de períodos debe ser mayor a cero.');
+        }
+
         if ($i == 0) {
             $renta = $C / $n;
         } else {
@@ -248,6 +270,14 @@ class CalculadoraController extends Controller
     {
         $M = $datos['monto'];
         $n = $datos['numero_periodos'];
+
+        if ($M <= 0) {
+            throw new \Exception('El monto debe ser mayor a cero.');
+        }
+
+        if ($n <= 0) {
+            throw new \Exception('El número de períodos debe ser mayor a cero.');
+        }
 
         if ($i == 0) {
             $renta = $M / $n;
@@ -284,6 +314,14 @@ class CalculadoraController extends Controller
         $R = $datos['renta'];
         $n = $datos['numero_periodos'];
 
+        if ($R <= 0) {
+            throw new \Exception('La renta debe ser mayor a cero.');
+        }
+
+        if ($n <= 0) {
+            throw new \Exception('El número de períodos debe ser mayor a cero.');
+        }
+
         if ($i == 0) {
             $valorPresente = $R * $n;
         } else {
@@ -317,6 +355,14 @@ class CalculadoraController extends Controller
     {
         $R = $datos['renta'];
         $n = $datos['numero_periodos'];
+
+        if ($R <= 0) {
+            throw new \Exception('La renta debe ser mayor a cero.');
+        }
+
+        if ($n <= 0) {
+            throw new \Exception('El número de períodos debe ser mayor a cero.');
+        }
 
         if ($i == 0) {
             $monto = $R * $n;
@@ -480,6 +526,11 @@ class CalculadoraController extends Controller
      */
     private function calcularTasaEfectivaAnual(float $tasa, string $periodoTasa, string $periodoCapitalizacion): float
     {
+        // Validación de tasa válida
+        if ($tasa < 0) {
+            throw new \Exception('La tasa de interés no puede ser negativa.');
+        }
+
         // Si no hay capitalización específica, usar el método tradicional
         if ($periodoCapitalizacion === $periodoTasa) {
             $m = $this->obtenerFrecuencia($periodoTasa);
@@ -539,7 +590,7 @@ class CalculadoraController extends Controller
     private function convertirDeTasaEfectivaAnual(float $tasaEfectivaAnual, string $periodo): float
     {
         $n = $this->obtenerFrecuencia($periodo);
-        return $tasaEfectivaAnual / $n;
+        return pow(1 + $tasaEfectivaAnual, 1 / $n) - 1;
     }
 
     /**
@@ -558,5 +609,100 @@ class CalculadoraController extends Controller
         ];
 
         return $frecuencias[$periodo] ?? 1;
+    }
+
+    /**
+     * Genera un resumen de la amortización para Renta desde Capital (Anualidad Anticipada)
+     * Útil para verificar los cálculos período a período
+     */
+    public function generarTablaAmortizacion(array $resultado, float $i): array
+    {
+        $C = $resultado['valor_presente'] ?? null;
+        if (!$C || $C <= 0) {
+            return [];
+        }
+
+        $R = $resultado['valor_calculado'] ?? null;
+        if (!$R || $R <= 0) {
+            return [];
+        }
+
+        $n = $resultado['numero_periodos'] ?? 0;
+        if ($n <= 0) {
+            return [];
+        }
+
+        $tabla = [];
+        $saldo = $C;
+
+        for ($periodo = 1; $periodo <= min($n, 12); $periodo++) { // Limitar a 12 filas para la vista
+            // Para anualidad anticipada, el primer pago reduce el saldo inmediatamente
+            $interesPeriodo = ($i == 0) ? 0 : $saldo * $i;
+            $capitalPeriodo = $R - $interesPeriodo;
+            $saldo -= $capitalPeriodo;
+
+            $tabla[] = [
+                'periodo' => $periodo,
+                'renta' => round($R, 2),
+                'interes' => round($interesPeriodo, 2),
+                'capital' => round($capitalPeriodo, 2),
+                'saldo' => round(max(0, $saldo), 2)
+            ];
+        }
+
+        return $tabla;
+    }
+
+    /**
+     * Obtiene ejemplos precargados para la calculadora
+     */
+    public function obtenerEjemplos(): array
+    {
+        return [
+            [
+                'nombre' => 'Préstamo Simple',
+                'descripcion' => 'Calcular renta de $100,000 a 12% anual, 24 meses',
+                'tipo_calculo' => 'renta',
+                'valor_presente' => 100000,
+                'tasa_interes' => 12,
+                'periodo_tasa' => 'anual',
+                'periodo_capitalizacion' => '',
+                'periodo_pagos' => 'mensual',
+                'numero_periodos' => 24
+            ],
+            [
+                'nombre' => 'Ahorro Programado',
+                'descripcion' => 'Calcular capital equivalente a $5,000 mensuales, 36 meses al 2.5% mensual',
+                'tipo_calculo' => 'valor_presente',
+                'renta' => 5000,
+                'tasa_interes' => 2.5,
+                'periodo_tasa' => 'mensual',
+                'periodo_capitalizacion' => '',
+                'periodo_pagos' => 'mensual',
+                'numero_periodos' => 36
+            ],
+            [
+                'nombre' => 'Fondo de Inversión',
+                'descripcion' => 'Calcular monto final de $3,000 mensuales, 60 meses al 18% anual',
+                'tipo_calculo' => 'monto',
+                'renta' => 3000,
+                'tasa_interes' => 18,
+                'periodo_tasa' => 'anual',
+                'periodo_capitalizacion' => '',
+                'periodo_pagos' => 'mensual',
+                'numero_periodos' => 60
+            ],
+            [
+                'nombre' => 'Plazo de Amortización',
+                'descripcion' => 'Calcular períodos para pagar $50,000 con rentas de $2,000 al 15% anual',
+                'tipo_calculo' => 'periodos',
+                'valor_presente' => 50000,
+                'renta' => 2000,
+                'tasa_interes' => 15,
+                'periodo_tasa' => 'anual',
+                'periodo_capitalizacion' => '',
+                'periodo_pagos' => 'mensual'
+            ]
+        ];
     }
 }
